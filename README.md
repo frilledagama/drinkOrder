@@ -10,5 +10,5 @@ Practice event-driven programming.
 - Drink options
 - Topping options
 - Ice/sugar %
-- Sign-in (user poitns systems?)
+- Sign-in (user points systems?)
 - UI
