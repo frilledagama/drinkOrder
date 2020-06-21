@@ -1,8 +1,9 @@
 package com.practice.android.justjava;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.text.InputType;
 import android.view.View;
 
@@ -26,39 +27,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        /*
-        //create toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-         }
 
-        */
         quantity = 0;
 
-        whippedcream = (CheckBox)findViewById(R.id.whippedcream_checkbox);
-        chocolate = (CheckBox)findViewById(R.id.chocolate_checkbox);
+        whippedcream = findViewById(R.id.whippedcream_checkbox);
+        chocolate = findViewById(R.id.chocolate_checkbox);
 
     }
-    /*
-    //get instances of checkboxes from activity_main
-    public void addListenerOnButtonClick(){
-        CheckBox whipcream = (CheckBox)findViewById(R.id.whipcream);
-    }
-    */
 
-    //method gets input name from edittext view to display in order summary
-    //TODO
-    // get the edit text input as a string
 
+    //method gets input name from edittext view
     public String getInputName(){
-        EditText nameEdtText = (EditText) findViewById(R.id.name_text_input);
+        EditText nameEdtText = findViewById(R.id.name_text_input);
         nameEdtText.setInputType(InputType.TYPE_CLASS_TEXT);
         name = nameEdtText.getText().toString();
         return name;
     }
 
-    //this method is called when the "+" button is pressed
+    //method is called when the "+" button is pressed
     public void increaseQuantity(View view){
         if (quantity < 100) {
             quantity = quantity + 1;
@@ -67,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         display(quantity);
     }
 
-    //this method is called when the "-" button is pressed
+    //method is called when the "-" button is pressed
     public void decreaseQuantity(View view){
         if (quantity > 0) {
             quantity = quantity - 1;
@@ -77,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
     //this method will calculate the price of the order based on current quantity
     private double calculatePrice(int quantity, double unitCost) {
-        double price = 0;
+        double price;
 
         if (whippedcream.isChecked()) {
             unitCost = unitCost + 0.99;
@@ -94,11 +80,10 @@ public class MainActivity extends AppCompatActivity {
 
     //this method display the given quantity value on the screen
     private void display(int quantity){
-        //TextView quantityTextView = (TextView) findViewById(R.id.quantity_text_view);
-        //quantityTextView.setText("hewwo");
+
         ((TextView) findViewById(R.id.quantity_text_view)).setText("" + quantity);
 
-        TextView orderSummaryTextView = (TextView) findViewById(R.id.order_summary_text_view);
+        TextView orderSummaryTextView = findViewById(R.id.order_summary_text_view);
 
         double price = calculatePrice(quantity,4.99);
 
@@ -108,13 +93,22 @@ public class MainActivity extends AppCompatActivity {
     //this method displays the price value on the screen
     private void displayMessage(String message){
 
-        TextView orderSummaryTextView = (TextView) findViewById(R.id.order_summary_text_view);
+        TextView orderSummaryTextView = findViewById(R.id.order_summary_text_view);
 
         orderSummaryTextView.setText(message);
     }
+    //method to send order summary to user email
+    private void sendEmailConfirmation(String message){
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto","maya.scottlourenco@gmail.com",null));
+        //The intent does not have a URI so declare plain type MIME
+        //emailIntent.setType("message/rfc822");
+        //emailIntent.setData(Uri.parse("mailto:maya.scottlourenco@gmail.com"));
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "JustJava Order Confirmation");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, message);
 
-    //TODO
-    //print the order summary to a textview and have it show when the order button is pressed?
+        startActivity(Intent.createChooser(emailIntent,"Send Order Summary"));
+    }
+
     //this method is called when the Order button is pressed and displays the order summary
     public void submitOrder(View view) {
         String orderSummaryString = "";
@@ -147,9 +141,8 @@ public class MainActivity extends AppCompatActivity {
        orderSummaryString = orderSummaryString + ("Total: " + calculatePrice(quantity,4.99)) + "\n";
        orderSummaryString = orderSummaryString + "Thank you!";
 
-       displayMessage(orderSummaryString);
+       //displayMessage(orderSummaryString);
+        sendEmailConfirmation(orderSummaryString);
     }
 
-    //TODO
-    //add scrolling support
 }

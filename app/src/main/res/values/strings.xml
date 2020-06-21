@@ -5,4 +5,5 @@
     <string name="btn_order">ORDER</string>
     <string name="btn_increase">+</string>
     <string name="btn_decrease">-</string>
+    <string name="quantity">%d</string>
 </resources>
